@@ -19,7 +19,7 @@ typedef struct user{
 	int matricula;
 	int mod;//modalidade do curso e falta adicionar nome completo
 	int fator_b;
-	TNserv *servico;
+	struct TNserv *servico;
 	
 	struct user* esq;
 	struct user* dir;
@@ -42,7 +42,7 @@ TNserv* rotacao_simples_direitaServ(TNserv *s);
 
 TNserv* criar(int Servi);
 TNserv* incluir_Nserv(TNserv* s, TNserv* dado);
-TNserv* inserirServ(TNserv* s, int valor);
+Tuser* inserirServ(int Servi, Tuser *a, int auxmatricula);
 
 int cor(TNserv* s);
 void trocaCor(TNserv* s);
