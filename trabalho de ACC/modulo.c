@@ -33,7 +33,7 @@ void menu(){
 			}
 
 			case 4:{
-				menuServ();
+				menuServ(user);
 			}
     			
 	    	default:
@@ -159,7 +159,7 @@ void imprime(Tuser* a){
 
 
 
-void menuServ(){//falta ligar a arvore de user na de serviço pois o serviço é por usuario e para inserir precisa ser feita uma busca com base na matricula do usurario e passar a matricula como parametro setando para a variavel servico
+void menuServ(Tuser *a){//falta ligar a arvore de user na de serviço pois o serviço é por usuario e para inserir precisa ser feita uma busca com base na matricula do usurario e passar a matricula como parametro setando para a variavel servico
 	int op, Servi;
 	int auxmatricula, auxserv;
     
@@ -179,13 +179,13 @@ void menuServ(){//falta ligar a arvore de user na de serviço pois o serviço é
     			scanf("%d", &Servi);
 				printf("\nInforme sua matricula: ");
 				scanf(" %d", &auxmatricula);
-    			servico = inserirServ(servico, Servi);
-    			imprimeServ(servico);
+    			a->servico = inserirServ(Servi,a->servico, auxmatricula);
+    			imprimeServ(a->servico);
 				break;
 			}
     		
     		case 2:{
-    			imprimeServ(servico);
+    			imprimeServ(a->servico);
 			}
 
 			case 3:{
@@ -229,56 +229,76 @@ TNserv* criarServ(int Servi){//mesmo c�digo da AVL
     dado->dir = NULL;
     return dado;
 }
-TNserv* inserirServ(TNserv* s, int Servi){
-	TNserv* dado = criarServ(Servi);
-	s = incluir_Nserv(s, dado);
 
-	if(s!=NULL)
-		 s->cor = preto;
+Tuser * buscarmatri(int auxmatricula, Tuser *a){
 	
-	return s;
+	if(a->matricula > auxmatricula){
+   			a->esq = buscarmatri(auxmatricula, a->esq);
+		   }
+   			
+   		else if(a->matricula < auxmatricula)
+   		{
+   			a->dir = (auxmatricula, a->dir);
+
+		} else{
+			return a;
+		}
+	
 }
-TNserv* incluir_Nserv(TNserv* s, TNserv* dado){
-	if(s==NULL) //arvre ser vazia
+
+Tuser* inserirServ(int Servi, Tuser *a, int auxmatricula){
+	TNserv* dado = criarServ(Servi);
+
+	a = buscarmatri(auxmatricula, a);
+	if(auxmatricula == a->matricula){
+	a->servico = incluir_Nserv(a->servico, dado);
+	}
+	if(a->servico !=NULL)
+		 a->servico->cor = preto;
+	
+	return a->servico;
+}
+TNserv* incluir_Nserv(TNserv* servico, TNserv* dado){
+	if(servico==NULL) //arvre ser vazia
 		return dado; 
 		
-	if(s->Servi == dado->Servi); //Servi j� existir na �rvore
+	if(servico->Servi == dado->Servi); //Servi j� existir na �rvore
 	else{ //se vai ser inserido � esquerda ou � direita
-		if(s->Servi > dado->Servi)
-			s->esq = incluir_Nserv(s->esq, dado);
+		if(servico->Servi > dado->Servi)
+			servico->esq = incluir_Nserv(servico->esq, dado);
 		else
-			s->dir = incluir_Nserv(s->dir, dado);
+			servico->dir = incluir_Nserv(servico->dir, dado);
 			
-		if((cor(s->esq)== vermelho) && (cor(s->dir)== vermelho)){
-			trocaCor(s);
+		if((cor(servico->esq)== vermelho) && (cor(servico->dir)== vermelho)){
+			trocaCor(servico);
 		}
-		if ((cor(s->esq) == vermelho) && (cor(s->esq->esq) == vermelho)){
-			s->cor = vermelho;
-			(s->esq)->cor = preto;
-			s = rotacao_simples_direitaServ(s);
+		if ((cor(servico->esq) == vermelho) && (cor(servico->esq->esq) == vermelho)){
+			servico->cor = vermelho;
+			(servico->esq)->cor = preto;
+			servico = rotacao_simples_direitaServ(servico);
 		}
-		if((cor(s->esq) == vermelho) && (cor(s->esq->dir) == vermelho)){
-			TNserv *aux = rotacao_simples_esquerdaServ(s->esq);
-			s->esq = aux;
-			s->cor = vermelho;
-			(s->esq)->cor = preto;
-			s = rotacao_simples_direitaServ(s);
+		if((cor(servico->esq) == vermelho) && (cor(servico->esq->dir) == vermelho)){
+			TNserv *aux = rotacao_simples_esquerdaServ(servico->esq);
+			servico->esq = aux;
+			servico->cor = vermelho;
+			(servico->esq)->cor = preto;
+			servico = rotacao_simples_direitaServ(servico);
 		}
-		if ((cor(s->dir) == vermelho) && (cor(s->dir->dir) == vermelho)){
-			s->cor = vermelho;
-			(s->dir)->cor = preto;
-			s = rotacao_simples_esquerdaServ(s);
+		if ((cor(servico->dir) == vermelho) && (cor(servico->dir->dir) == vermelho)){
+			servico->cor = vermelho;
+			(servico->dir)->cor = preto;
+			servico = rotacao_simples_esquerdaServ(servico);
 		}
-		if((cor(s->dir) == vermelho) && (cor(s->dir->esq) == vermelho)){
-			TNserv *aux = rotacao_simples_direitaServ(s->dir);
-			s->dir = aux;
-			s->cor = vermelho;
-			(s->dir)->cor = preto;
-			s = rotacao_simples_esquerdaServ(s);
+		if((cor(servico->dir) == vermelho) && (cor(servico->dir->esq) == vermelho)){
+			TNserv *aux = rotacao_simples_direitaServ(servico->dir);
+			servico->dir = aux;
+			servico->cor = vermelho;
+			(servico->dir)->cor = preto;
+			servico = rotacao_simples_esquerdaServ(servico);
 		}
 			
 	}
-	return s;	
+	return servico;	
 }
 
 int cor(TNserv* s){
